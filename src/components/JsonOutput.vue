@@ -1,6 +1,9 @@
 <template>
 
-  <pre><code class="language-javascript code-block">{{ code }}</code></pre>
+  <button @click="triggerCopyCode" type="button" class="ml-auto my-4 rounded bg-indigo-600 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+    {{ copyText }}
+  </button>
+  <pre id="code-block" class="mt-4"><code class="language-javascript code-block">{{ code }}</code></pre>
 
 </template>
 
@@ -27,6 +30,7 @@
     },
     setup(props){
 
+      const copyText = ref('Copy code')
       const jsonObject = ref<{[key: string]: string | boolean | object | Button[] | undefined }>({
         channel_id: '${context.params.event.channel_id}',
         tts: false
@@ -108,6 +112,22 @@
         return filteredEmbed
       })
 
+      const triggerCopyCode = () => {
+
+        navigator.clipboard.writeText(code.value).then(() => {
+          
+          copyText.value = 'Copied!'
+        }).catch(() => {
+          
+          copyText.value = 'Error'
+        })
+
+        setTimeout(() => {
+            
+          copyText.value = 'Copy code'
+        }, 3000)
+      }
+
       watch(() => props.messageContent, () => {
 
         if(props.messageContent){
@@ -118,7 +138,9 @@
 
       return {
 
-        code
+        code,
+        triggerCopyCode,
+        copyText
       }
     }
   })

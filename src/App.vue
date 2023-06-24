@@ -7,7 +7,7 @@
           <ToggleSwitch @change="toggleSwitch" />
         </div>
       </div>
-      <div v-if="showCode" class="code-block-container mt-8">
+      <div v-if="showCode" class="code-block-container flex flex-col">
         
         <JsonOutput :messageContent="messageContent" :embed="embed" :buttons="buttons" />
       </div>
