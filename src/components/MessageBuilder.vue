@@ -124,7 +124,7 @@
               </span>
             </label>
             <div class="mt-2 label-body flex flex-column gap-2 hidden">
-              <EmbedImage @change="updateEmbedImage" type="thumbnail" :url="embed.image?.url" :proxy_url="embed.image?.proxy_url" :height="embed.image?.height" :width="embed.image?.width" />
+              <EmbedImage @change="updateEmbedImage" type="thumbnail" :url="embed.thumbnail?.url" :proxy_url="embed.thumbnail?.proxy_url" :height="embed.thumbnail?.height" :width="embed.thumbnail?.width" />
             </div>  
           </div>
 

@@ -65,7 +65,7 @@
         </div>
 
         <!-- Embed thumbnail -->
-        <div v-if="embed.thumbnail" class="w-20 py-4 pr-4 ml-auto">
+        <div v-if="embed.thumbnail" class="max-w-[50px] py-4 pr-4 ml-auto">
           <img v-if="embed.thumbnail.url" :src="embed.thumbnail.url" alt="">
           <img v-else-if="embed.thumbnail.proxy_url" :src="embed.thumbnail.proxy_url" alt="">
         </div>

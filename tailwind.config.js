@@ -4,7 +4,10 @@ export default {
   theme: {
     extend: {
       width: {
-        '40': '40%',
+        '40': '40%'
+      },
+      maxWidth:{
+        '50': '50px'
       },
       colors: {
         'discord-dark': '#2c2f33',

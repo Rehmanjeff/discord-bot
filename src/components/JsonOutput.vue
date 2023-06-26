@@ -142,13 +142,15 @@
 
       const loadCode = (data: any) => {
 
-        const startSubstring = ".messages.create("
-        const endSubstring = ")"
-        const startIndex = data.indexOf(startSubstring) + startSubstring.length
-        const endIndex = data.indexOf(endSubstring, startIndex)
+        // const startSubstring = ".messages.create("
+        // const endSubstring = ")"
+        // const startIndex = data.indexOf(startSubstring) + startSubstring.length
+        // const endIndex = data.indexOf(endSubstring, startIndex)
 
-        let inputJson = data.substr(startIndex, endIndex - startIndex).replace(/`|'/g, '"').replace(/"color": (\w+)/g, '"color": "$1"').replace(/;/g, '')
+        //let inputJson = data.substr(startIndex, endIndex - startIndex).replace(/`|'/g, '"').replace(/"color": (\w+)/g, '"color": "$1"').replace(/;/g, '')
         //console.log(inputJson)
+
+        let inputJson = data.replace(/`/g, '"').replace(/"color": (\w+)/g, '"color": "$1"').replace(/;/g, '')
 
         try {
           
