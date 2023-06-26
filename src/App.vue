@@ -9,7 +9,7 @@
       </div>
       <div v-if="showCode" class="code-block-container flex flex-col">
         
-        <JsonOutput :messageContent="messageContent" :embed="embed" :buttons="buttons" />
+        <JsonOutput @codeLoaded="handleCodeLoaded" :messageContent="messageContent" :embed="embed" :buttons="buttons" />
       </div>
       <div v-else class="mt-16">
 
@@ -32,6 +32,8 @@ import JsonOutput from "./components/JsonOutput.vue"
 import Embed from "./types/Embed"
 import Button from "./types/components/Button"
 import ToggleSwitch from "./widgets/Switch.vue"
+// @ts-ignore 
+import { convertColorToHex } from './utilities/common.js'
 
 export default defineComponent({
   name: "App",
@@ -64,6 +66,40 @@ export default defineComponent({
       showCode.value = value
     }
 
+    const handleCodeLoaded = (content: string, embeds: Array<any>, components: Array<any>) => {
+
+      // loading message content
+      if(content !== undefined){
+
+        messageContent.value = content
+      }else{
+
+        messageContent.value = ''
+      }
+
+      // loading embed
+      if(embeds !== undefined && embeds[0]){
+
+        embed.value = embeds[0]
+        if(embed.value){
+          // embed color conversion to hex
+          embed.value.color = convertColorToHex(embeds[0].color)
+        }
+      }else{
+
+        embed.value = null
+      }
+
+      // loading buttons
+      if(components !== undefined && components[0] && components[0].components){
+
+        buttons.value = components[0].components
+      }else{
+
+        buttons.value = []
+      }
+    }
+
     return {
 
       showCode,
@@ -75,7 +111,8 @@ export default defineComponent({
       updateMessage,
       updateEmbed,
       toggleSwitch,
-      updateButtons
+      updateButtons,
+      handleCodeLoaded
     }
   }
 })

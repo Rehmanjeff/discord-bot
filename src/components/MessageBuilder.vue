@@ -240,6 +240,7 @@ export default defineComponent({
       {id: 1, style: '1', label: '', custom_id: 'button-1', url: null, disabled: 'false', emoji: '', type: '2'}
     ])
     const embed = ref<Embed>(props.embed ? props.embed : {
+      type: "rich",
       title: '',
       description: '',
       url: null,

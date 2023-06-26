@@ -103,7 +103,7 @@
         <div v-if="button.id > 0" @click="triggerRemove" class="px-4 py-2 ml-2 rounded-md bg-gray-300 cursor-pointer hover:bg-gray-400 h-fit">
             <font-awesome-icon icon="fa-solid fa-xmark" class="icon" size="sm" />
         </div>
-        <Modal :open="openModal" @closed="openModal=false"  />
+        <Modal :open="openModal" @closed="openModal=false" :data="emojis" dataType="emojis"  />
     </div>
 
 </template>
@@ -112,12 +112,15 @@
 import { defineComponent, PropType, watch, ref } from 'vue'
 import Button from "../types/components/Button"
 import Modal from "../widgets/Modal.vue"
+import * as emojione from 'emojione'
+import Emoji from "../types/Emoji"
+
 // @ts-ignore 
 import { isValidURL } from '../utilities/common.js'
 
 export default defineComponent({
 
-    name: "ButtonComponent",
+    code: "ButtonComponent",
     components: { Modal },
     props: {
         button: {
@@ -128,8 +131,28 @@ export default defineComponent({
     emits: ['remove', 'change'],
     setup(props, { emit }){
 
-        const openModal = ref<Boolean>(false)
+        const openModal = ref(false)
         const urlError = ref<string | null>(null)
+        const emojis = ref<Emoji[]>([
+            { code: ':thumbsup:', icon: emojione.shortnameToUnicode(':thumbsup:')},
+            { code: ':heart:', icon: emojione.shortnameToUnicode(':heart:')},
+            { code: ':laughing:', icon: emojione.shortnameToUnicode(':laughing:')},
+            { code: ':wink:', icon: emojione.shortnameToUnicode(':wink:')},
+            { code: ':sunglasses:', icon: emojione.shortnameToUnicode(':sunglasses:')},
+            { code: ':fire:', icon: emojione.shortnameToUnicode(':fire:')},
+            { code: ':rocket:', icon: emojione.shortnameToUnicode(':rocket:')},
+            { code: ':pizza:', icon: emojione.shortnameToUnicode(':pizza:')},
+            { code: ':rainbow:', icon: emojione.shortnameToUnicode(':rainbow:')},
+            { code: ':dog:', icon: emojione.shortnameToUnicode(':dog:')},
+            { code: ':cat:', icon: emojione.shortnameToUnicode(':cat:')},
+            { code: ':thumbsdown:', icon: emojione.shortnameToUnicode(':thumbsdown:')},
+            { code: ':broken_heart:', icon: emojione.shortnameToUnicode(':broken_heart:')},
+            { code: ':sleeping:', icon: emojione.shortnameToUnicode(':sleeping:')},
+            { code: ':thinking:', icon: emojione.shortnameToUnicode(':thinking:')},
+            { code: ':clap:', icon: emojione.shortnameToUnicode(':clap:')},
+            { code: ':rose:', icon: emojione.shortnameToUnicode(':rose:')},
+            { code: ':star:', icon: emojione.shortnameToUnicode(':star:')}
+        ])
         const triggerRemove = () => {
 
             emit('remove', props.button.id)
@@ -155,7 +178,8 @@ export default defineComponent({
 
             triggerRemove,
             urlError,
-            openModal
+            openModal,
+            emojis
         }
     }
 })

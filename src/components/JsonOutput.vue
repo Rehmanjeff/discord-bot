@@ -1,19 +1,28 @@
 <template>
 
-  <button @click="triggerCopyCode" type="button" class="ml-auto my-4 rounded bg-indigo-600 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-    {{ copyText }}
-  </button>
+  <div class="flex flex-row ml-auto ">
+    <button @click="openModal = true" type="button" class="my-4 mr-2 rounded bg-purple-600 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+      Load my code
+    </button>
+    <button @click="triggerCopyCode" type="button" class="my-4 rounded bg-indigo-600 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+      {{ copyText }}
+    </button>
+  </div>
   <pre id="code-block" class="mt-4"><code class="language-javascript code-block">{{ code }}</code></pre>
 
+  <Modal :open="openModal" @closed="openModal=false" @response="loadCode" :data="undefined" dataType="json"  />
 </template>
 
 <script lang="ts">
   import { defineComponent, PropType, watch, ref, computed } from 'vue'
   import Embed from "../types/Embed"
   import Button from "../types/components/Button"
+  import Modal from "../widgets/Modal.vue"
 
   export default defineComponent({
     name: "JsonOutput",
+    components: { Modal },
+    emits: ['codeLoaded'],
     props: {
       messageContent:{
         required: false,
@@ -28,8 +37,9 @@
         type: Array as PropType<Button[]>
       },
     },
-    setup(props){
+    setup(props, { emit }){
 
+      const openModal = ref(false)
       const copyText = ref('Copy code')
       const jsonObject = ref<{[key: string]: string | boolean | object | Button[] | undefined }>({
         channel_id: '${context.params.event.channel_id}',
@@ -68,6 +78,8 @@
 
           if (props.embed.hasOwnProperty(key)) {
 
+            filteredEmbed.type = 'rich'
+            
             filteredEmbed.color = props.embed.color
 
             if(key == 'title' && props.embed['title'] !== ''){
@@ -128,6 +140,39 @@
         }, 3000)
       }
 
+      const loadCode = (data: any) => {
+
+        const startSubstring = ".messages.create("
+        const endSubstring = ")"
+        const startIndex = data.indexOf(startSubstring) + startSubstring.length
+        const endIndex = data.indexOf(endSubstring, startIndex)
+
+        let inputJson = data.substr(startIndex, endIndex - startIndex).replace(/`|'/g, '"').replace(/"color": (\w+)/g, '"color": "$1"').replace(/;/g, '')
+        //console.log(inputJson)
+
+        try {
+          
+          inputJson = JSON.parse(inputJson)
+          if (inputJson.hasOwnProperty('content')) {
+
+            jsonObject.value.content = inputJson.content
+          }
+          if (inputJson.hasOwnProperty('embeds')) {
+
+            jsonObject.value.embeds = inputJson.embeds
+          }
+          if (inputJson.hasOwnProperty('components')) {
+
+            jsonObject.value.components = inputJson.components
+          }
+          
+          emit('codeLoaded', inputJson.content, inputJson.embeds, inputJson.components)
+        } catch (error) {
+
+          console.log('Invalid JSON:' + error)
+        }
+      }
+
       watch(() => props.messageContent, () => {
 
         if(props.messageContent){
@@ -140,7 +185,9 @@
 
         code,
         triggerCopyCode,
-        copyText
+        copyText,
+        openModal,
+        loadCode
       }
     }
   })
